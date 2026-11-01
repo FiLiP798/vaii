@@ -3,61 +3,110 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Základné rozloženie aplikácie mySkyLog.">
+  <meta name="description" content="Osobný denník absolvovaných letov v aplikácii mySkyLog – prehľad.">
   <title>Prehľad | mySkyLog</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="brand" href="index.html" aria-label="mySkyLog – úvod">
-        <h1 class="brand-name">mySkyLog</h1>
-        <p class="brand-subtitle">Osobný denník letov</p>
-      </a>
-      <nav class="main-nav" aria-label="Hlavná navigácia">
-        <a href="index.html" aria-current="page">Prehľad</a>
-        <a href="flights.html">Môj denník letov</a>
-        <a href="#letiska">Letiská</a>
-        <a href="#spolocnosti">Letecké spoločnosti</a>
-      </nav>
-      <div class="user-area"><span class="avatar" aria-hidden="true">F</span><span>Filip</span></div>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html" aria-label="mySkyLog – úvod">
+      <h1 class="brand-name">mySkyLog</h1>
+      <p class="brand-subtitle">Osobný denník letov</p>
+    </a>
+    <nav class="main-nav" aria-label="Hlavná navigácia">
+      <a href="index.html" aria-current="page">Prehľad</a>
+      <a href="flights.html">Môj denník letov</a>
+      <a href="#letiska">Letiská</a>
+      <a href="#spolocnosti">Letecké spoločnosti</a>
+    </nav>
+    <div class="user-area"><span class="avatar" aria-hidden="true">F</span><span>Filip</span></div>
+  </div>
+</header>
+
+<main>
+  <section class="page-heading">
+    <div>
+      <h1>Vitajte späť, Filip!</h1>
+      <p>Tu je rýchly prehľad vašich leteckých dobrodružstiev a štatistík.</p>
     </div>
-  </header>
+    <a class="button button-primary" href="flights.html">Otvoriť denník letov</a>
+  </section>
 
-  <main>
-    <section class="page-heading">
-      <div>
-        <h1>Názov stránky</h1>
-        <p>Krátky popis aktuálnej stránky a jej obsahu.</p>
-      </div>
-      <a class="button button-primary" href="flights.html">Otvoriť denník letov</a>
-    </section>
+  <section class="stats-grid" aria-label="Súhrnné štatistiky">
+    <article class="stat-card">
+      <p class="stat-label">Celkový počet letov</p>
+      <p class="stat-value">24</p>
+    </article>
+    <article class="stat-card">
+      <p class="stat-label">Nalietaná vzdialenosť</p>
+      <p class="stat-value">58 420 km</p>
+    </article>
+    <article class="stat-card">
+      <p class="stat-label">Navštívené letiská</p>
+      <p class="stat-value">18</p>
+    </article>
+    <article class="stat-card">
+      <p class="stat-label">Celkové výdavky</p>
+      <p class="stat-value">1 845,50 €</p>
+    </article>
+  </section>
 
-    <section class="placeholder-content" aria-label="Priestor pre hlavný obsah">
-      <div>
-        <h2>Obsah stránky</h2>
-        <p>Priestor pre hlavný obsah aktuálnej stránky</p>
-      </div>
-    </section>
+  <section class="section panel table-panel" aria-labelledby="recent-flights-title">
+    <div class="table-heading">
+      <h2 id="recent-flights-title">Posledné pridané lety</h2>
+      <a class="button button-secondary" href="flights.html">Zobraziť všetky</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+        <tr>
+          <th scope="col">Dátum</th>
+          <th scope="col">Číslo letu</th>
+          <th scope="col">Trasa</th>
+          <th scope="col">Letecká spoločnosť</th>
+          <th scope="col">Vzdialenosť</th>
+          <th scope="col">Cena</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td data-label="Dátum">12. 06. 2026</td>
+          <td data-label="Číslo letu">OK123</td>
+          <td data-label="Trasa"><span class="route">VIE → BCN</span></td>
+          <td data-label="Letecká spoločnosť" class="airline">Austrian Airlines</td>
+          <td data-label="Vzdialenosť">1 360 km</td>
+          <td data-label="Cena">145 €</td>
+        </tr>
+        <tr>
+          <td data-label="Dátum">25. 05. 2026</td>
+          <td data-label="Číslo letu">FR456</td>
+          <td data-label="Trasa"><span class="route">BTS → STN</span></td>
+          <td data-label="Letecká spoločnosť" class="airline">Ryanair</td>
+          <td data-label="Vzdialenosť">1 280 km</td>
+          <td data-label="Cena">12 000 míľ + 35 €</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-    <section class="placeholder-grid" aria-label="Ukážky typov obsahu">
-      <article class="placeholder-card">
-        <h2>Karta / súhrn</h2>
-        <div class="placeholder-lines" aria-hidden="true"><span></span><span></span><span></span></div>
+  <section class="section" aria-label="Rýchle akcie a informácie">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px;">
+      <article class="panel">
+        <h2>Rýchla správa</h2>
+        <p>Pridajte nový let do svojho denníka hneď po pristátí.</p>
+        <a class="button button-primary" href="flights.html#formular-pridania">Pridať nový let</a>
       </article>
-      <article class="placeholder-card">
-        <h2>Tabuľka / zoznam</h2>
-        <div class="placeholder-lines" aria-hidden="true"><span></span><span></span><span></span></div>
-      </article>
-      <article class="placeholder-card">
-        <h2>Formulár / ďalší obsah</h2>
-        <div class="placeholder-lines" aria-hidden="true"><span></span><span></span><span></span></div>
-      </article>
-    </section>
-  </main>
+    </div>
+  </section>
+</main>
 
-  <footer class="site-footer">
-    <div class="footer-inner"><strong>mySkyLog</strong><span>© 2026 – mySkyLog. Všetky práva vyhradené.</span></div>
-  </footer>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <strong>mySkyLog</strong>
+    <span>© 2026 – mySkyLog. Všetky práva vyhradené.</span>
+  </div>
+</footer>
 </body>
 </html>
