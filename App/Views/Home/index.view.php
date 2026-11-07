@@ -1,5 +1,7 @@
 <?php
 /** @var \Framework\Support\LinkGenerator $link */
+/** @var \App\Models\Flight[] $recentFlights */
+$e = static fn($value) => htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 ?>
 <section class="page-heading">
     <div>
@@ -10,22 +12,10 @@
 </section>
 
 <section class="stats-grid" aria-label="Súhrnné štatistiky">
-    <article class="stat-card">
-        <p class="stat-label">Celkový počet letov</p>
-        <p class="stat-value">24</p>
-    </article>
-    <article class="stat-card">
-        <p class="stat-label">Nalietaná vzdialenosť</p>
-        <p class="stat-value">58 420 km</p>
-    </article>
-    <article class="stat-card">
-        <p class="stat-label">Navštívené letiská</p>
-        <p class="stat-value">18</p>
-    </article>
-    <article class="stat-card">
-        <p class="stat-label">Celkové výdavky</p>
-        <p class="stat-value">1 845,50 €</p>
-    </article>
+    <article class="stat-card"><p class="stat-label">Celkový počet letov</p><p class="stat-value"><?= number_format($flightCount, 0, ',', ' ') ?></p></article>
+    <article class="stat-card"><p class="stat-label">Nalietaná vzdialenosť</p><p class="stat-value"><?= number_format($totalDistance, 0, ',', ' ') ?> km</p></article>
+    <article class="stat-card"><p class="stat-label">Navštívené letiská</p><p class="stat-value"><?= number_format($airportCount, 0, ',', ' ') ?></p></article>
+    <article class="stat-card"><p class="stat-label">Celkové výdavky</p><p class="stat-value"><?= number_format($totalExpenses, 2, ',', ' ') ?> €</p></article>
 </section>
 
 <section class="section panel table-panel" aria-labelledby="recent-flights-title">
@@ -35,33 +25,21 @@
     </div>
     <div class="table-wrap">
         <table>
-            <thead>
-            <tr>
-                <th scope="col">Dátum</th>
-                <th scope="col">Číslo letu</th>
-                <th scope="col">Trasa</th>
-                <th scope="col">Letecká spoločnosť</th>
-                <th scope="col">Vzdialenosť</th>
-                <th scope="col">Cena</th>
-            </tr>
-            </thead>
+            <thead><tr><th scope="col">Dátum</th><th scope="col">Číslo letu</th><th scope="col">Trasa</th><th scope="col">Letecká spoločnosť</th><th scope="col">Vzdialenosť</th><th scope="col">Cena</th></tr></thead>
             <tbody>
-            <tr>
-                <td data-label="Dátum">12. 06. 2026</td>
-                <td data-label="Číslo letu">OK123</td>
-                <td data-label="Trasa"><span class="route">VIE → BCN</span></td>
-                <td data-label="Letecká spoločnosť" class="airline">Austrian Airlines</td>
-                <td data-label="Vzdialenosť">1 360 km</td>
-                <td data-label="Cena">145 €</td>
-            </tr>
-            <tr>
-                <td data-label="Dátum">25. 05. 2026</td>
-                <td data-label="Číslo letu">FR456</td>
-                <td data-label="Trasa"><span class="route">BTS → STN</span></td>
-                <td data-label="Letecká spoločnosť" class="airline">Ryanair</td>
-                <td data-label="Vzdialenosť">1 280 km</td>
-                <td data-label="Cena">12 000 míľ + 35 €</td>
-            </tr>
+            <?php if (!$recentFlights): ?>
+                <tr><td colspan="6">Zatiaľ tu nie sú žiadne lety. Pridajte svoj prvý záznam do denníka.</td></tr>
+            <?php endif; ?>
+            <?php foreach ($recentFlights as $flight): ?>
+                <tr>
+                    <td data-label="Dátum"><?= $e(date('d. m. Y', strtotime((string)$flight->flight_date))) ?></td>
+                    <td data-label="Číslo letu"><?= $e($flight->flight_number) ?></td>
+                    <td data-label="Trasa"><span class="route"><?= $e($flight->departure_airport) ?> → <?= $e($flight->arrival_airport) ?></span></td>
+                    <td data-label="Letecká spoločnosť" class="airline"><?= $e($flight->airline) ?></td>
+                    <td data-label="Vzdialenosť"><?= $flight->distance_km !== null && $flight->distance_km !== '' ? number_format((int)$flight->distance_km, 0, ',', ' ') . ' km' : '—' ?></td>
+                    <td data-label="Cena"><?= $flight->ticket_price !== null && $flight->ticket_price !== '' ? number_format((float)$flight->ticket_price, 2, ',', ' ') . ' €' : '—' ?></td>
+                </tr>
+            <?php endforeach; ?>
             </tbody>
         </table>
     </div>

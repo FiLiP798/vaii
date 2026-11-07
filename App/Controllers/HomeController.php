@@ -5,6 +5,7 @@ namespace App\Controllers;
 use Framework\Core\BaseController;
 use Framework\Http\Request;
 use Framework\Http\Responses\Response;
+use App\Models\Flight;
 
 /**
  * Class HomeController
@@ -39,7 +40,26 @@ class HomeController extends BaseController
      */
     public function index(Request $request): Response
     {
-        return $this->html();
+        $flights = Flight::getAll(orderBy: 'id DESC');
+        $distance = 0;
+        $expenses = 0.0;
+        $airports = [];
+        foreach ($flights as $flight) {
+            $distance += (int)($flight->distance_km ?? 0);
+            $expenses += (float)($flight->ticket_price ?? 0);
+            foreach ([$flight->departure_airport, $flight->arrival_airport] as $airport) {
+                if (trim((string)$airport) !== '') {
+                    $airports[strtolower(trim((string)$airport))] = true;
+                }
+            }
+        }
+        return $this->html([
+            'flightCount' => count($flights),
+            'totalDistance' => $distance,
+            'airportCount' => count($airports),
+            'totalExpenses' => $expenses,
+            'recentFlights' => array_slice($flights, 0, 5),
+        ]);
     }
 
 
@@ -48,7 +68,67 @@ class HomeController extends BaseController
      */
     public function flights(Request $request): Response
     {
-        return $this->html();
+        return $this->html(['flights' => Flight::getAll(orderBy: 'flight_date DESC, id DESC')]);
+    }
+
+    /** Save a new flight diary entry. */
+    public function createFlight(Request $request): Response
+    {
+        if (!$request->isPost()) {
+            return $this->redirect($this->url('home.flights') . '#formular-pridania')->setStatusCode(303);
+        }
+        $flight = new Flight();
+        $flight->setFromRequest($request);
+        $this->normalizeOptionalFields($flight);
+        $flight->save();
+        return $this->redirect($this->url('home.flights'))->setStatusCode(303);
+    }
+
+    /** Show the edit form for an existing entry. */
+    public function editFlight(Request $request): Response
+    {
+        $flight = Flight::getOne($request->get('id'));
+        if ($flight === null) {
+            return $this->redirect($this->url('home.flights'))->setStatusCode(303);
+        }
+        return $this->html(['flight' => $flight], 'flight_form');
+    }
+
+    /** Update an existing flight diary entry. */
+    public function updateFlight(Request $request): Response
+    {
+        if ($request->isPost()) {
+            $flight = Flight::getOne($request->post('id'));
+            if ($flight !== null) {
+                $flight->setFromRequest($request);
+                $this->normalizeOptionalFields($flight);
+                $flight->save();
+            }
+        }
+        return $this->redirect($this->url('home.flights'))->setStatusCode(303);
+    }
+
+    /** Delete a selected entry. */
+    public function deleteFlight(Request $request): Response
+    {
+        if ($request->isPost()) {
+            $flight = Flight::getOne($request->post('id'));
+            $flight?->delete();
+        }
+        return $this->redirect($this->url('home.flights'))->setStatusCode(303);
+    }
+
+    /** Convert empty optional form inputs to SQL NULL (numeric columns reject empty strings). */
+    private function normalizeOptionalFields(Flight $flight): void
+    {
+        foreach (['distance_km', 'ticket_price'] as $field) {
+            if ($flight->{$field} === '') {
+                $flight->{$field} = null;
+            }
+        }
+        if ($flight->payment_method === '') {
+            $flight->payment_method = null;
+        }
     }
 
 }

@@ -1,87 +1,45 @@
 <?php
 /** @var \Framework\Support\LinkGenerator $link */
+/** @var \App\Models\Flight[] $flights */
+$e = static fn($value) => htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 ?>
 <section class="page-heading" aria-labelledby="page-title">
-    <div>
-        <h1 id="page-title">Môj denník letov</h1>
-        <p>Prehľad a správa absolvovaných letov</p>
-    </div>
+    <div><h1 id="page-title">Môj denník letov</h1><p>Prehľad a správa absolvovaných letov</p></div>
     <a class="button button-primary" href="#formular-pridania">＋ Pridať let</a>
 </section>
 
-<section class="stats-grid" aria-label="Súhrnné štatistiky">
-    <article class="stat-card"><p class="stat-label">Počet letov</p><p class="stat-value">24</p></article>
-    <article class="stat-card"><p class="stat-label">Nalietaná vzdialenosť</p><p class="stat-value">58 420 km</p></article>
-    <article class="stat-card"><p class="stat-label">Celkové výdavky</p><p class="stat-value">1 845,50 €</p></article>
-    <article class="stat-card"><p class="stat-label">Použité míle</p><p class="stat-value">32 000</p></article>
-</section>
-
-<section class="section panel" aria-label="Vyhľadávanie a filtrovanie letov">
-    <form class="filters" action="#" method="get">
-        <div class="field search-field">
-            <label for="search">Vyhľadávanie</label>
-            <input id="search" name="search" type="search" placeholder="Vyhľadať let alebo číslo letu">
-        </div>
-        <div class="field">
-            <label for="airport">Odletové letisko</label>
-            <select id="airport" name="airport"><option>Všetky letiská</option><option>VIE – Viedeň</option><option>BTS – Bratislava</option></select>
-        </div>
-        <div class="field">
-            <label for="airline">Letecká spoločnosť</label>
-            <select id="airline" name="airline"><option>Všetky spoločnosti</option><option>Austrian Airlines</option><option>Ryanair</option><option>Lufthansa</option></select>
-        </div>
-        <div class="field">
-            <label for="year">Rok</label>
-            <select id="year" name="year"><option>Všetky roky</option><option>2026</option><option>2025</option><option>2024</option></select>
-        </div>
-        <div class="field">
-            <label for="payment">Spôsob úhrady</label>
-            <select id="payment" name="payment"><option>Všetky</option><option>Peniaze</option><option>Míle</option><option>Kombinácia</option></select>
-        </div>
-        <div class="filter-actions">
-            <button class="button-primary" type="button">Filtrovať</button>
-            <button class="button-secondary" type="reset">Zrušiť filtre</button>
-        </div>
-    </form>
-</section>
-
 <section class="section panel table-panel" aria-labelledby="flight-list-title">
-    <div class="table-heading"><h2 id="flight-list-title">Zoznam letov</h2></div>
+    <div class="table-heading"><h2 id="flight-list-title">Zoznam letov (<?= count($flights) ?>)</h2></div>
     <div class="table-wrap">
         <table>
-            <thead>
-            <tr><th scope="col">Dátum</th><th scope="col">Číslo letu</th><th scope="col">Trasa</th><th scope="col">Letecká spoločnosť</th><th scope="col">Vzdialenosť</th><th scope="col">Cena</th><th scope="col">Úhrada</th><th scope="col">Akcie</th></tr>
-            </thead>
+            <thead><tr><th>Dátum</th><th>Číslo letu</th><th>Trasa</th><th>Letecká spoločnosť</th><th>Vzdialenosť</th><th>Cena</th><th>Úhrada</th><th>Akcie</th></tr></thead>
             <tbody>
-            <tr>
-                <td data-label="Dátum">12. 06. 2026</td><td data-label="Číslo letu">OK123</td><td data-label="Trasa"><span class="route">VIE → BCN</span></td><td data-label="Letecká spoločnosť" class="airline">Austrian Airlines</td><td data-label="Vzdialenosť">1 360 km</td><td data-label="Cena">145 €</td><td data-label="Úhrada"><span class="payment-tag">Peniaze</span></td><td data-label="Akcie"><div class="actions"><a href="#detail">Detail</a><a href="#upravit">Upraviť</a><a href="#zmazat">Zmazať</a></div></td>
-            </tr>
-            <tr>
-                <td data-label="Dátum">25. 05. 2026</td><td data-label="Číslo letu">FR456</td><td data-label="Trasa"><span class="route">BTS → STN</span></td><td data-label="Letecká spoločnosť" class="airline">Ryanair</td><td data-label="Vzdialenosť">1 280 km</td><td data-label="Cena">12 000 míľ + 35 €</td><td data-label="Úhrada"><span class="payment-tag">Kombinácia</span></td><td data-label="Akcie"><div class="actions"><a href="#detail">Detail</a><a href="#upravit">Upraviť</a><a href="#zmazat">Zmazať</a></div></td>
-            </tr>
-            <tr>
-                <td data-label="Dátum">03. 04. 2026</td><td data-label="Číslo letu">LH789</td><td data-label="Trasa"><span class="route">VIE → FRA</span></td><td data-label="Letecká spoločnosť" class="airline">Lufthansa</td><td data-label="Vzdialenosť">620 km</td><td data-label="Cena">—</td><td data-label="Úhrada"><span class="payment-tag">Nezadané</span></td><td data-label="Akcie"><div class="actions"><a href="#detail">Detail</a><a href="#upravit">Upraviť</a><a href="#zmazat">Zmazať</a></div></td>
-            </tr>
+            <?php if (!$flights): ?>
+                <tr><td colspan="8">Zatiaľ nemáte uložený žiadny let. Pridajte prvý záznam nižšie.</td></tr>
+            <?php endif; ?>
+            <?php foreach ($flights as $flight): ?>
+                <tr>
+                    <td data-label="Dátum"><?= $e($flight->flight_date) ?></td>
+                    <td data-label="Číslo letu"><?= $e($flight->flight_number) ?></td>
+                    <td data-label="Trasa"><span class="route"><?= $e($flight->departure_airport) ?> → <?= $e($flight->arrival_airport) ?></span></td>
+                    <td data-label="Letecká spoločnosť" class="airline"><?= $e($flight->airline) ?></td>
+                    <td data-label="Vzdialenosť"><?= $flight->distance_km !== null && $flight->distance_km !== '' ? $e($flight->distance_km) . ' km' : '—' ?></td>
+                    <td data-label="Cena"><?= $flight->ticket_price !== null && $flight->ticket_price !== '' ? $e(number_format((float)$flight->ticket_price, 2, ',', ' ')) . ' €' : '—' ?></td>
+                    <td data-label="Úhrada"><?= $e($flight->payment_method ?: 'Nezadané') ?></td>
+                    <td data-label="Akcie"><div class="actions">
+                        <a class="button button-secondary action-button" href="<?= $link->url('home.editFlight', ['id' => $flight->id]) ?>">Upraviť</a>
+                        <form method="post" action="<?= $link->url('home.deleteFlight') ?>" onsubmit="return confirm('Naozaj chcete vymazať tento let?')">
+                            <input type="hidden" name="id" value="<?= $e($flight->id) ?>"><button class="button-secondary action-button" type="submit">Zmazať</button>
+                        </form>
+                    </div></td>
+                </tr>
+            <?php endforeach; ?>
             </tbody>
         </table>
-    </div>
-    <div class="table-footer">
-        <p>Zobrazené 1–3 z 24 letov</p>
-        <nav class="pagination" aria-label="Stránkovanie">
-            <a href="#predchadzajuca">Predchádzajúca</a><a href="#strana-1" aria-current="page">1</a><a href="#strana-2">2</a><a href="#strana-3">3</a><a href="#dalsia">Ďalšia</a>
-        </nav>
     </div>
 </section>
 
 <section id="formular-pridania" class="section panel" aria-labelledby="add-flight-title">
     <h2 id="add-flight-title" class="section-title">Pridať let</h2>
-    <p>V tejto úlohe je formulár iba vizuálnou ukážkou rozloženia. Jeho spracovanie bude doplnené neskôr.</p>
-    <form class="filters" action="#" method="get">
-        <div class="field"><label for="flight-number">Číslo letu</label><input id="flight-number" name="flight-number" placeholder="Napr. OK123"></div>
-        <div class="field"><label for="departure">Odletové letisko</label><select id="departure" name="departure"><option>Vyberte letisko</option><option>VIE – Viedeň</option><option>BTS – Bratislava</option></select></div>
-        <div class="field"><label for="arrival">Príletové letisko</label><select id="arrival" name="arrival"><option>Vyberte letisko</option><option>BCN – Barcelona</option><option>STN – Londýn Stansted</option></select></div>
-        <div class="field"><label for="flight-date">Dátum odletu</label><input id="flight-date" name="flight-date" type="date"></div>
-        <div class="field"><label for="ticket-price">Cena letenky (€)</label><input id="ticket-price" name="ticket-price" type="number" min="0" step="0.01" placeholder="Napr. 145,00"></div>
-        <div class="filter-actions"><button class="button-primary" type="button">Uložiť let</button><button class="button-secondary" type="reset">Vymazať formulár</button></div>
-    </form>
+    <?php $flight = new \App\Models\Flight(); $formAction = $link->url('home.createFlight'); $submitLabel = 'Uložiť let'; include __DIR__ . '/flight_fields.view.php'; ?>
 </section>

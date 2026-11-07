@@ -19,12 +19,12 @@
             <h1 class="brand-name">mySkyLog</h1>
             <p class="brand-subtitle">Osobný denník letov</p>
         </a>
-        <?php $currentAction = $_GET['a'] ?? 'index'; ?>
+        <?php $currentAction = $_GET['a'] ?? 'index'; $isFlightSection = in_array($currentAction, ['flights', 'editFlight'], true); ?>
         <nav class="main-nav" aria-label="Hlavná navigácia">
             <a href="<?= $link->url('home.index') ?>" <?= $currentAction === 'index' ? 'aria-current="page"' : '' ?>>Prehľad</a>
-            <a href="<?= $link->url('home.flights') ?>" <?= $currentAction === 'flights' ? 'aria-current="page"' : '' ?>>Môj denník letov</a>
-            <a href="<?= $link->url('home.flights') ?>#letiska">Letiská</a>
-            <a href="<?= $link->url('home.flights') ?>#spolocnosti">Letecké spoločnosti</a>
+            <a href="<?= $link->url('home.flights') ?>" <?= $isFlightSection ? 'aria-current="page"' : '' ?>>Môj denník letov</a>
+            <a href="#letiska">Letiská</a>
+            <a href="#spolocnosti">Letecké spoločnosti</a>
         </nav>
         <div class="user-area"><span class="avatar" aria-hidden="true">F</span><span>Filip</span></div>
     </div>
