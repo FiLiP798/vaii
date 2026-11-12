@@ -19,12 +19,12 @@
             <h1 class="brand-name">mySkyLog</h1>
             <p class="brand-subtitle">Osobný denník letov</p>
         </a>
-        <?php $currentAction = $_GET['a'] ?? 'index'; $isFlightSection = in_array($currentAction, ['flights', 'editFlight'], true); ?>
+        <?php $currentAction = $_GET['a'] ?? 'index'; $currentController = $_GET['c'] ?? 'home'; $isFlightSection = in_array($currentAction, ['flights', 'editFlight'], true); ?>
         <nav class="main-nav" aria-label="Hlavná navigácia">
-            <a href="<?= $link->url('home.index') ?>" <?= $currentAction === 'index' ? 'aria-current="page"' : '' ?>>Prehľad</a>
+            <a href="<?= $link->url('home.index') ?>" <?= $currentController === 'home' && $currentAction === 'index' ? 'aria-current="page"' : '' ?>>Prehľad</a>
             <a href="<?= $link->url('home.flights') ?>" <?= $isFlightSection ? 'aria-current="page"' : '' ?>>Môj denník letov</a>
-            <a href="#letiska">Letiská</a>
-            <a href="#spolocnosti">Letecké spoločnosti</a>
+            <a href="<?= $link->url('airports.index') ?>" <?= $currentController === 'airports' ? 'aria-current="page"' : '' ?>>Letiská</a>
+            <a href="<?= $link->url('airlines.index') ?>" <?= $currentController === 'airlines' ? 'aria-current="page"' : '' ?>>Letecké spoločnosti</a>
         </nav>
         <div class="user-area"><span class="avatar" aria-hidden="true">F</span><span>Filip</span></div>
     </div>

@@ -1,6 +1,8 @@
 <?php
 /** @var \Framework\Support\LinkGenerator $link */
 /** @var \App\Models\Flight[] $flights */
+/** @var array<string, \App\Models\Airport> $airportMap */
+/** @var array<string, \App\Models\Airline> $airlineMap */
 $e = static fn($value) => htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
 ?>
 <section class="page-heading" aria-labelledby="page-title">
@@ -18,11 +20,12 @@ $e = static fn($value) => htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
                 <tr><td colspan="8">Zatiaľ nemáte uložený žiadny let. Pridajte prvý záznam nižšie.</td></tr>
             <?php endif; ?>
             <?php foreach ($flights as $flight): ?>
+                <?php $departure = $airportMap[(string)$flight->departure_airport_id] ?? null; $arrival = $airportMap[(string)$flight->arrival_airport_id] ?? null; $airline = $airlineMap[(string)$flight->airline_id] ?? null; ?>
                 <tr>
                     <td data-label="Dátum"><?= $e($flight->flight_date) ?></td>
                     <td data-label="Číslo letu"><?= $e($flight->flight_number) ?></td>
-                    <td data-label="Trasa"><span class="route"><?= $e($flight->departure_airport) ?> → <?= $e($flight->arrival_airport) ?></span></td>
-                    <td data-label="Letecká spoločnosť" class="airline"><?= $e($flight->airline) ?></td>
+                    <td data-label="Trasa"><span class="route"><?= $departure ? $e($departure->iata_code) : '—' ?> → <?= $arrival ? $e($arrival->iata_code) : '—' ?></span></td>
+                    <td data-label="Letecká spoločnosť" class="airline"><?= $airline ? $e($airline->name) : '—' ?></td>
                     <td data-label="Vzdialenosť"><?= $flight->distance_km !== null && $flight->distance_km !== '' ? $e($flight->distance_km) . ' km' : '—' ?></td>
                     <td data-label="Cena"><?= $flight->ticket_price !== null && $flight->ticket_price !== '' ? $e(number_format((float)$flight->ticket_price, 2, ',', ' ')) . ' €' : '—' ?></td>
                     <td data-label="Úhrada"><?= $e($flight->payment_method ?: 'Nezadané') ?></td>

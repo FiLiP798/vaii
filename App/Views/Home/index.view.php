@@ -34,8 +34,9 @@ $e = static fn($value) => htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
                 <tr>
                     <td data-label="Dátum"><?= $e(date('d. m. Y', strtotime((string)$flight->flight_date))) ?></td>
                     <td data-label="Číslo letu"><?= $e($flight->flight_number) ?></td>
-                    <td data-label="Trasa"><span class="route"><?= $e($flight->departure_airport) ?> → <?= $e($flight->arrival_airport) ?></span></td>
-                    <td data-label="Letecká spoločnosť" class="airline"><?= $e($flight->airline) ?></td>
+                    <?php $departure = $airportMap[(string)$flight->departure_airport_id] ?? null; $arrival = $airportMap[(string)$flight->arrival_airport_id] ?? null; $airline = $airlineMap[(string)$flight->airline_id] ?? null; ?>
+                    <td data-label="Trasa"><span class="route"><?= $departure ? $e($departure->iata_code) : '—' ?> → <?= $arrival ? $e($arrival->iata_code) : '—' ?></span></td>
+                    <td data-label="Letecká spoločnosť" class="airline"><?= $airline ? $e($airline->name) : '—' ?></td>
                     <td data-label="Vzdialenosť"><?= $flight->distance_km !== null && $flight->distance_km !== '' ? number_format((int)$flight->distance_km, 0, ',', ' ') . ' km' : '—' ?></td>
                     <td data-label="Cena"><?= $flight->ticket_price !== null && $flight->ticket_price !== '' ? number_format((float)$flight->ticket_price, 2, ',', ' ') . ' €' : '—' ?></td>
                 </tr>
